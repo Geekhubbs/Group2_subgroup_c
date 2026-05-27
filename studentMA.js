@@ -144,7 +144,7 @@ app.post('/colleges', (req, res) => {
     const { name, code } = req.body;
     if (!name || !code) {
         return res.status(400).json({
-            message: "Name or Code is required"
+            message: "Enter all needed data required"
         })
     }
     const newCollege = {
@@ -157,12 +157,13 @@ app.post('/colleges', (req, res) => {
 
 })
 //POST for Department
-app.post('/colleges/:collegeId/departments', (req, res) => {
-    const collegeId = parseInt(req.params.collegeId)
+app.post('/departments', (req, res) => {
+
     const { name, code } = req.body
-    if (!name || !code) {
+    const collegeId = parseInt(req.body.collegeId)
+    if (!name || !code || !collegeId) {
         return res.status(400).json({
-            message: "Name or Code is required"
+            message: "Enter all needed data"
         })
     }
     const departmentCollege = colleges.find(
@@ -186,13 +187,13 @@ app.post('/colleges/:collegeId/departments', (req, res) => {
     res.status(201).json(newDepartment)
 })
 //POST method for student
-app.post('/departments/:departmentId/students', (req, res) => {
-    const departmentId = parseInt(req.params.departmentId)
+app.post('/students', (req, res) => {
     const { fullName, gender, level, email, year } = req.body;
+    const departmentId = parseInt(req.body.departmentId);
 
-    if (!fullName || !gender || !level || !email || !year) {
+    if (!fullName || !gender || !departmentId || !level || !email || !year) {
         return res.status(400).json({
-            message: "Enter all data"
+            message: "Enter all needed data"
         })
     }
     //finding department
