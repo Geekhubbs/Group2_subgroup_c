@@ -4,12 +4,13 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
+const {colleges,departments,students} = require('./data')
 
 //json parsing
 app.use(express.json());
 
 //Student Management Array
-const colleges = [{
+/*const colleges = [{
     college_id: 1,
     name: "College of Engineering",
     college_code: "COLENG",
@@ -31,7 +32,7 @@ const students = [{
     level: "200",
     department_id: 1,
     phone: "090675432"
-}];
+}];*/
 
 //Get methods 
 app.get(('/colleges'), (req, res) => {
@@ -56,9 +57,9 @@ app.get('/students', (req, res) => {
 
 //GET methods by id
 app.get(('/colleges/:id'), (req, res) => {
-    const college_id = Number(req.params.id);
+    const collegeId = Number(req.params.id);
     const college = colleges.find(
-        c => c.college_id === college_id
+        c => c.collegeId === collegeId
     )
 
     if (!college) {
@@ -69,9 +70,9 @@ app.get(('/colleges/:id'), (req, res) => {
 })
 
 app.get(('/departments/:id'), (req, res) => {
-    const department_id = Number(req.params.id);
+    const departmentId = Number(req.params.id);
     const department = departments.find(
-        d => d.department_id === department_id
+        d => d.departmentId === departmentId
     )
 
     if (!department) {
@@ -82,9 +83,9 @@ app.get(('/departments/:id'), (req, res) => {
 });
 
 app.get('/students/:id', (req, res) => {
-    const student_id = Number(req.params.id);
+    const studentId = Number(req.params.id);
     const student = students.find(
-        s => s.student_id === student_id
+        s => s.studentId === studentId
     )
     if (!student) {
         return res.status(400).json({ message: "Student Not Found" })
@@ -109,6 +110,9 @@ app.post('/students', (req, res) => {
 
 //Patch methods
 //Delete methods
+app.get("/",(req,res)=>{
+    res.send("Student Management API");
+})
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
