@@ -4,35 +4,10 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-const {colleges,departments,students} = require('./data')
+const {colleges,departments,students,} = require('./data')
 
 //json parsing
 app.use(express.json());
-
-//Student Management Array
-/*const colleges = [{
-    college_id: 1,
-    name: "College of Engineering",
-    college_code: "COLENG",
-    dean: "Prof. Adewale"
-}];
-
-const departments = [{
-    department_id: 1,
-    name: "Computer Engineering",
-    department_code: "CPE",
-    college_id: 1,
-    hod: "Dr. Johnson"
-}];
-
-const students = [{
-    student_id: 1,
-    full_name: "John Doe",
-    email: "doe@yahoo.com",
-    level: "200",
-    department_id: 1,
-    phone: "090675432"
-}];*/
 
 //Get methods 
 app.get(('/colleges'), (req, res) => {
@@ -96,6 +71,74 @@ app.get('/students/:id', (req, res) => {
 
 });
 
+
+//GET departments under a college 
+app.get('/colleges/:collegeId/departments', (req,res)=>{
+    const collegeId = parseInt(req.params.collegeId)
+    const college = colleges.find(      //find the college
+        c => c.collegeId === collegeId
+    )
+    if(!college){                      //validate if college existed
+        return res.status(404).json({message: "College not found"})
+    }
+
+    const collegeDepartments = departments.filter(   //find departments in the college
+        d => d.collegeId === college.collegeId
+    )
+
+    const departmentNames = collegeDepartments.map( //Extract department names 
+        dept => dept.name
+    )
+
+    return res.status(200).json({
+        college: college.name,
+        NumberOfDept: collegeDepartments.length,
+        departments: departmentNames
+    })
+
+})
+
+//GET students in a department
+app.get('/departments/:departmentid/students', (req,res)=>{
+    const departmentId = parseInt(req.params.departmentid)
+    const department = departments.find(     //find the dept
+        d => d.departmentId === departmentId
+    )
+    if(!department){                            //validate if department exist
+        return res.status(404).json({message: "Department not found"})
+    }
+
+    const departmentStudents = students.filter(     //Extract students from the dept
+        s => s.departmentId === department.departmentId
+    )
+
+    return res.status(200).json({
+        department: department.name,
+        NumberOfStudents: departmentStudents.length,
+        students: departmentStudents
+    })
+})
+
+//GET students in a college
+app.get('/colleges/:collegeId/students', (req,res)=>{
+    const collegeId = parseInt(req.params.collegeId)
+    const college = colleges.find(        //find the college
+        c => c.collegeId === collegeId
+    )
+    if(!college){                        //validate if college exist
+        return res.status(404).json({message: "College Not Found"})
+    }
+    const collegeStudents = students.filter(  //Extract students in the college
+        s => s.collegeId === college.collegeId
+    )
+
+    return res.status(200).json({
+        college: college.name,
+        NumberOfStudents: collegeStudents.length,
+        students: collegeStudents
+    })
+})
+
 //POST methods
 app.post('/colleges', (req, res) => {
 
@@ -110,10 +153,10 @@ app.post('/students', (req, res) => {
 
 //Patch methods
 //Delete methods
-app.get("/",(req,res)=>{
-    res.send("Student Management API");
+app.use((err,req,res,next)=>{
+    res.status(500).json({error: "Server Error!"})
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Student Management API listening on port ${port}`)
 })
