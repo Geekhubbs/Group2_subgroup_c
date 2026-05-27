@@ -235,6 +235,71 @@ app.post('/students', (req, res) => {
 
 //Patch methods
 
+
+// PATCH /colleges/:id - edit college details
+
+app.patch('/colleges/:id', (req, res) => {
+    const collegeId = Number(req.params.id);
+    const college = colleges.find(c => c.collegeId === collegeId);
+
+    if (!college) {
+        return res.status(404).json({ message: "College does not exist" });
+    }
+
+    const { name, code } = req.body;
+    if (name) college.name = name;
+    if (code) college.code = code;
+
+    res.status(200).json(college);
+});
+
+// PUT /departments/:id - update department
+
+app.put('/departments/:id', (req, res) => {
+    const departmentId = Number(req.params.id);
+    const department = departments.find(d => d.departmentId === departmentId);
+
+    if (!department) {
+        return res.status(404).json({ message: "Department does not exist" });
+    }
+
+    const { name, code, collegeId } = req.body;
+
+    // Validate new collegeId if provided
+    
+    if (collegeId) {
+        const collegeExists = colleges.find(c => c.collegeId === Number(collegeId));
+        if (!collegeExists) {
+            return res.status(400).json({ message: "College does not exist" });
+        }
+        department.collegeId = Number(collegeId);
+    }
+
+    if (name) department.name = name;
+    if (code) department.code = code;
+
+    res.status(200).json(department);
+});
+
+// PATCH /students/:id - update student details
+app.patch('/students/:id', (req, res) => {
+    const studentId = Number(req.params.id);
+    const student = students.find(s => s.studentId === studentId);
+
+    if (!student) {
+        return res.status(404).json({ message: "Student Not Found" });
+    }
+
+    const { fullName, gender, level, email } = req.body;
+
+    if (fullName) student.fullName = fullName;
+    if (gender) student.gender = gender;
+    if (level) student.level = level;
+    if (email) student.email = email;
+
+    res.status(200).json(student);
+});
+
 //Delete methods
 
 app.use((err, req, res, next) => {
