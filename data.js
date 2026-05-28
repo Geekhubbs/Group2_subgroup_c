@@ -105,7 +105,38 @@ const departments = [
 "name": "Pure and Applied Zoology",
 "code": "PAZ",
 "collegeId": 3
-} 
+},
+ // COLMAS departments
+  {
+    "departmentId": 15,
+    "name": "Accounting",
+    "code": "ACC",
+    "collegeId": 4
+  },
+  {
+    "departmentId": 16,
+    "name": "Banking and Finance",
+    "code": "BNF",
+    "collegeId": 4
+  },
+  {
+    "departmentId": 17,
+    "name": "Business Administration",
+    "code": "BUS",
+    "collegeId": 4
+  },
+  {
+    "departmentId": 18,
+    "name": "Economics",
+    "code": "ECO",
+    "collegeId": 4
+  },
+  {
+    "departmentId": 19,
+    "name": "Entrepreneurial Studies",
+    "code": "ETS",
+    "collegeId": 4
+  }
 ]
 
 const students = [

@@ -300,13 +300,68 @@ app.patch('/students/:id', (req, res) => {
     res.status(200).json(student);
 });
 
-//Delete methods
+// ==================== DELETE ROUTES ====================
 
+// DELETE /colleges/:id - remove a college
+app.delete('/colleges/:id', (req, res) => {
+    const collegeId = Number(req.params.id);
+    const collegeIndex = colleges.findIndex(c => c.collegeId === collegeId);
+
+    if (collegeIndex === -1) {
+        return res.status(404).json({ message: "College not found" });
+    }
+
+    // Prevent deletion if departments are linked
+    const hasDepartments = departments.some(d => d.collegeId === collegeId);
+    if (hasDepartments) {
+        return res.status(400).json({ message: "Cannot delete college with existing departments" });
+    }
+
+    colleges.splice(collegeIndex, 1);
+    res.status(200).json({ message: "College deleted successfully" });
+});
+
+// DELETE /departments/:id - remove a department
+app.delete('/departments/:id', (req, res) => {
+    const departmentId = Number(req.params.id);
+    const departmentIndex = departments.findIndex(d => d.departmentId === departmentId);
+
+    if (departmentIndex === -1) {
+        return res.status(404).json({ message: "Department not found" });
+    }
+
+    // Prevent deletion if students are enrolled
+    const hasStudents = students.some(s => s.departmentId === departmentId);
+    if (hasStudents) {
+        return res.status(400). json({ message: "Cannot delete department with enrolled students" });
+    }
+
+    departments.splice(departmentIndex, 1);
+    res.status(200).json({ message: "Department deleted successfully" });
+});
+
+// DELETE /students/:id - remove a student
+app.delete('/students/:id', (req, res) => {
+    const studentId = Number(req.params.id);
+    const studentIndex = students.findIndex(s => s.studentId === studentId);
+
+    if (studentIndex === -1) {
+        return res.status(404).json({ message: "Student not found" });
+    }
+
+    students.splice(studentIndex, 1);
+    res.status(200).json({ message: "Student deleted successfully" });
+});
+
+// ==================== ERROR HANDLER & SERVER START ====================
+
+// Error handler (must be after all routes)
 app.use((err, req, res, next) => {
     console.log(err)
     res.status(500).json({ error: "Server Error!" })
 })
 
+// Start the server
 app.listen(port, () => {
     console.log(`Student Management API listening on port ${port}`)
 })
