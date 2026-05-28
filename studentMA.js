@@ -74,7 +74,7 @@ app.get('/students/:id', (req, res) => {
 
 //GET departments under a college 
 app.get('/colleges/:collegeId/departments', (req, res) => {
-    const collegeId = parseInt(req.params.collegeId)
+    const collegeId = Number(req.params.collegeId)
     const college = colleges.find(      //find the college
         c => c.collegeId === collegeId
     )
@@ -100,7 +100,7 @@ app.get('/colleges/:collegeId/departments', (req, res) => {
 
 //GET students in a department
 app.get('/departments/:departmentid/students', (req, res) => {
-    const departmentId = parseInt(req.params.departmentid)
+    const departmentId = Number(req.params.departmentid)
     const department = departments.find(     //find the dept
         d => d.departmentId === departmentId
     )
@@ -121,7 +121,7 @@ app.get('/departments/:departmentid/students', (req, res) => {
 
 //GET students in a college
 app.get('/colleges/:collegeId/students', (req, res) => {
-    const collegeId = parseInt(req.params.collegeId)
+    const collegeId = Number(req.params.collegeId)
     const college = colleges.find(        //find the college
         c => c.collegeId === collegeId
     )
@@ -160,7 +160,7 @@ app.post('/colleges', (req, res) => {
 app.post('/departments', (req, res) => {
 
     const { name, code } = req.body
-    const collegeId = parseInt(req.body.collegeId)
+    const collegeId = Number(req.body.collegeId)
     if (!name || !code || !collegeId) {
         return res.status(400).json({
             message: "Enter all needed data"
@@ -189,7 +189,7 @@ app.post('/departments', (req, res) => {
 //POST method for student
 app.post('/students', (req, res) => {
     const { fullName, gender, level, email, year } = req.body;
-    const departmentId = parseInt(req.body.departmentId);
+    const departmentId = Number(req.body.departmentId);
 
     if (!fullName || !gender || !departmentId || !level || !email || !year) {
         return res.status(400).json({
@@ -233,7 +233,7 @@ app.post('/students', (req, res) => {
 
 });
 
-//Patch methods
+
 
 
 // PATCH /colleges/:id - edit college details
@@ -253,9 +253,9 @@ app.patch('/colleges/:id', (req, res) => {
     res.status(200).json(college);
 });
 
-// PUT /departments/:id - update department
+// Patch /departments/:id - update department
 
-app.put('/departments/:id', (req, res) => {
+app.patch('/departments/:id', (req, res) => {
     const departmentId = Number(req.params.id);
     const department = departments.find(d => d.departmentId === departmentId);
 
@@ -266,7 +266,7 @@ app.put('/departments/:id', (req, res) => {
     const { name, code, collegeId } = req.body;
 
     // Validate new collegeId if provided
-    
+
     if (collegeId) {
         const collegeExists = colleges.find(c => c.collegeId === Number(collegeId));
         if (!collegeExists) {
@@ -333,7 +333,7 @@ app.delete('/departments/:id', (req, res) => {
     // Prevent deletion if students are enrolled
     const hasStudents = students.some(s => s.departmentId === departmentId);
     if (hasStudents) {
-        return res.status(400). json({ message: "Cannot delete department with enrolled students" });
+        return res.status(400).json({ message: "Cannot delete department with enrolled students" });
     }
 
     departments.splice(departmentIndex, 1);
